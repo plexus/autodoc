@@ -43,7 +43,11 @@ top of the script.
 
 Call `./generate_docs` at any time, and the HTML will immediately be updated and made available on-line. This is safe to do no matter the state of your repository. More on why that is below.
 
+The other variables are optional, the values you see in the script above are their defaults.
+
 You can have local changes, untracked files, etc. The script does not actually switch branches, and does not change the current "working tree" beyond running `$AUTODOC_CMD`. `autodoc` does use the "git index" (also known as the "staging area"), so this needs to be clean. If you did a `git add` before then the script will complain and refuse to continue until you `commit` or `reset`.
+
+**DO WATCH OUT:** The `$AUTODOC_DIR` directory will be removed and re-created on every run. It should only contain generated artifacts, and should be in your `.gitignore`. If you point this to your homework then it will eat your homework.
 
 ## How it works
 
