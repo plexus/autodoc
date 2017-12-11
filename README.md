@@ -64,6 +64,21 @@ The procedure that `autodoc` follows has been tweaked over time to be as reliabl
 - Push this commit to `AUTODOC_REMOTE/AUTODOC_BRANCH` (e.g. `origin/gh-pages`)
 - Display the commit with diff stats so you get some feedback on what happened
 
+## Generating API docs
+
+`autodoc` is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation. 
+
+If this was wikipedia this part would be called a stub. Do dive in! 
+
+### Clojure
+
+The main tool you're looking for is [codox](https://github.com/weavejester/codox), although [Marginalia](https://github.com/gdeer81/marginalia) could also be of use.
+
+- example [using Leiningen](https://github.com/lambdaisland/uri/blob/master/project.clj)
+- example [using boot](https://github.com/martinklepsch/derivatives/blob/1f4cc704dec11be301b790e204fc90c7fe18b293/build.boot#L48-L51)
+
+Use `DOC_CMD="lein codox"` or `DOC_CMD="boot codox <options> target"`. 
+
 ## Improving autodoc
 
 This script has already seen a few iterations of polish, but it can without a doubt be further improved. Its needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
