@@ -12,5 +12,66 @@ Enter `autodoc`, a single shell script that automates this process as best as it
 
 ## Installation
 
-Copy the `autodoc` script 
+The recommended, "evergreen" way of using `autodoc` is to create a small shell script in your repository, you can call it `generate_docs`, that looks like this:
 
+``` shell
+#!/bin/bash
+
+# Command that generates the HTML.
+export DOC_CMD="lein codox"
+
+# The directory where the result of $DOC_CMD, the generated HTML, ends up. This
+# is what gets committed to $TARGET_BRANCH.
+# export DOC_DIR="gh-pages"
+
+# The git remote to fetch and push to. 
+# export TARGET_REMOTE="origin"
+
+# Branch name to commit and push to
+# export TARGET_BRANCH="gh-pages"
+
+\curl -sSL https://raw.githubusercontent.com/plexus/autodoc/master/autodoc.sh | bash
+```
+
+At a minimum you must set `DOC_CMD`, this is the command that gets called to generate the HTML files.
+
+If you're not comfortable running a shell script straight off the internets, you
+can also just copy `autodoc.sh` to your project, and change the variables at the
+top of the script.
+
+## Usage instructions
+
+Call `./generate_docs` at any time, and the HTML will immediately be updated and made available on-line. This is safe to do no matter the state of your repository. More on why that is below.
+
+You can have local changes, untracked files, etc. The script does not actually switch branches, and does not change the current "working tree" beyond running `$DOC_CMD`. `autodoc` does use the "git index" (also known as the "staging area"), so this needs to be clean. If you did a `git add` before then the script will complain and refuse to continue until you `commit` or `reset`.
+
+## How it works
+
+The procedure that `autodoc` follows has been tweaked over time to be as reliable and fool proof as possible. Here is roughly what it does, in order.
+
+- Check if the git index is clean, otherwise exit
+- Check if `$DOC_CMD` is set, otherwise exit
+- Do a `git fetch`, to know what the target branch looks like on the remote (e.g. `origin/gh-pages`)
+- Clear out `$DOC_DIR`. It deletes it if already there, and then creates it anew, to make sure you don't commit stale files.
+- Run `$DOC_CMD`
+- Create a git "tree object" of the contents of `$DOC_DIR`
+- Generate a commit message which includes the source branch and commit hash, as well as an overview of any local changes
+- Create a git "commit object" with this tree and message, and with as parent commit the latest commit on the target branch on the target remote
+- Push this commit to `TARGET_REMOTE/TARGET_BRANCH` (e.g. `origin/gh-pages`)
+- Display the commit with diff stats so you get some feedback on what happened
+
+## Improving autodoc
+
+This script has already seen a few iterations of polish, but it can without a doubt be further improved. Its needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
+
+If you can make it more reliable and safe then it currently is, then we'd love to get a pull request.
+
+## Credits
+
+Initially written by [Arne Brasseur](https://twitter.com/plexus), improved with the help of [Martin Klepsch](http://twitter.com/jackrusher/) and [Jack Rusher](http://twitter.com/martinklepsch/)
+
+## License
+
+Copyright &copy; Arne Brasseur and contributors
+
+Available under the Mozilla Public License 2.0. See `LICENSE`.

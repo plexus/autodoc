@@ -23,18 +23,18 @@ TARGET_BRANCH=${TARGET_BRANCH:-"gh-pages"}
 #DOC_CMD=${DOC_CMD:-"boot codox -s src -n my-project -o gh-pages target"}
 
 # Working tree directory. The output of $DOC_CMD must end up in this directory.
-WORK_TREE=${WORK_TREE:-"gh-pages"}
+DOC_DIR=${DOC_DIR:-"gh-pages"}
 
 ############################################################
 
 if ! git diff-index --quiet --cached HEAD ; then
     echo "Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"
-    exit
+    exit 1
 fi
 
 if [[ -z "$DOC_CMD" ]]; then
     echo "Please specify a DOC_CMD, e.g. lein codox"
-    exit
+    exit 1
 fi
 
 MESSAGE="Updating docs based on $(git rev-parse --abbrev-ref HEAD) $(git rev-parse HEAD)"
@@ -54,18 +54,23 @@ fi
 git fetch $TARGET_REMOTE
 
 # Start from a clean slate, we only commit the new output of DOC_CMD, nothing else.
-rm -rf $WORK_TREE
-mkdir -p $WORK_TREE
+rm -rf $DOC_DIR
+mkdir -p $DOC_DIR
 
 echo "Generating docs"
 $DOC_CMD
 
+if [ $(find $DOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]; then
+    echo "The command '$DOC_CMD' created no output in `$DOC_DIR`, giving up"
+    exit 1
+fi
+
 # The full output of DOC_CMD is added to the git index, staged to become a new
 # file tree+commit
 echo "Adding file to git index"
-git --work-tree=$WORK_TREE add -A
+git --work-tree=$DOC_DIR add -A
 
-# Create a git tree object with the exact contents of $WORK_TREE (the output of
+# Create a git tree object with the exact contents of $DOC_DIR (the output of
 # the DOC_CMD), this will be file tree of the new commit that's being created.
 TREE=`git write-tree`
 echo "Created git tree $TREE"
