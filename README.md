@@ -81,7 +81,7 @@ Use `DOC_CMD="lein codox"` or `DOC_CMD="boot codox <options> target"`.
 
 ## Improving autodoc
 
-This script has already seen a few iterations of polish, but it can without a doubt be further improved. Its needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
+This script has already seen a few iterations of polish, but it can without a doubt be further improved. It needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
 
 If you can make it more reliable and safe then it currently is, then we'd love to get a pull request.
 
