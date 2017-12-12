@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-12 Tue 19:40 -->
+<!-- 2017-12-12 Tue 19:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>autodoc</title>
@@ -230,6 +230,198 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <h1 class="title">autodoc</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org39ab3b8">1. Installation</a></li>
+<li><a href="#orgdec35ea">2. Usage instructions</a></li>
+<li><a href="#orgf944adf">3. How it works</a></li>
+<li><a href="#org6d59381">4. Generating API docs</a>
+<ul>
+<li><a href="#org54110d2">4.1. Clojure</a></li>
+</ul>
+</li>
+<li><a href="#orgd4ad461">5. Improving autodoc</a></li>
+<li><a href="#org1b69493">6. Credits</a></li>
+<li><a href="#org6935c6f">7. License</a></li>
+<li><a href="#org8b9aebe">8. Source</a></li>
+</ul>
+</div>
+</div>
+<p>
+Automate the publishing of generated docs.
+</p>
+
+<p>
+Imagine the following scenario: you have files in a git repo, from which you generate HTML, which you want to make available on-line.
+</p>
+
+<p>
+For example: you have source code from which you generate API docs, or you have markdown files that you run through a static site generator.
+</p>
+
+<p>
+If you're using Github then getting these resulting files on-line is as easy as pushing to the <code>gh-pages</code> branch. This isn't hard, but you have to first generate the HTML, put it aside, switch branches, commit the change, push it to Github, and switch back. There are many little things that can go wrong in that process. It's also few minutes of your life that you just wasted doing a tedious, mechanical job, every time again.
+</p>
+
+<p>
+Enter <code>autodoc</code>, a single shell script that automates this process as best as it can.
+</p>
+
+<div id="outline-container-org39ab3b8" class="outline-2">
+<h2 id="org39ab3b8"><span class="section-number-2">1</span> Installation</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The recommended, "evergreen" way of using <code>autodoc</code> is to create a small shell script in your repository, you can call it <code>generate_docs</code>, that looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #969896; font-style: italic;">#</span><span style="color: #969896; font-style: italic;">!/bin/</span><span style="color: #b5bd68;">bash</span>
+
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Command that generates the HTML.</span>
+<span style="color: #b294bb;">export</span> <span style="color: #f0c674;">AUTODOC_CMD</span>=<span style="color: #8abeb7;">"lein codox"</span>
+
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The directory where the result of $AUTODOC_CMD, the generated HTML, ends up. This</span>
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">is what gets committed to $AUTODOC_BRANCH.</span>
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">export AUTODOC_DIR="gh-pages"</span>
+
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The git remote to fetch from and push to. </span>
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">export AUTODOC_REMOTE="origin"</span>
+
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Branch name to commit and push to</span>
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">export AUTODOC_BRANCH="gh-pages"</span>
+
+\curl -sSL https://raw.githubusercontent.com/plexus/autodoc/master/autodoc.sh | bash
+</pre>
+</div>
+
+<p>
+At a minimum you must set <code>AUTODOC_CMD</code>, this is the command that gets called to generate the HTML files.
+</p>
+
+<p>
+If you're not comfortable running a shell script straight off the internets, you
+can also just copy <code>autodoc.sh</code> to your project, and change the variables at the
+top of the script.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdec35ea" class="outline-2">
+<h2 id="orgdec35ea"><span class="section-number-2">2</span> Usage instructions</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Call <code>./generate_docs</code> at any time, and the HTML will immediately be updated and made available on-line. This is safe to do no matter the state of your repository. More on why that is below.
+</p>
+
+<p>
+The other variables are optional, the values you see in the script above are their defaults.
+</p>
+
+<p>
+You can have local changes, untracked files, etc. The script does not actually switch branches, and does not change the current "working tree" beyond running <code>$AUTODOC_CMD</code>. <code>autodoc</code> does use the "git index" (also known as the "staging area"), so this needs to be clean. If you did a <code>git add</code> before then the script will complain and refuse to continue until you <code>commit</code> or <code>reset</code>.
+</p>
+
+<p>
+<b><b>DO WATCH OUT:</b></b> The <code>$AUTODOC_DIR</code> directory will be removed and re-created on every run. It should only contain generated artifacts, and should be in your <code>.gitignore</code>. If you point this to your homework then it will eat your homework.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf944adf" class="outline-2">
+<h2 id="orgf944adf"><span class="section-number-2">3</span> How it works</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+The procedure that <code>autodoc</code> follows has been tweaked over time to be as reliable and fool proof as possible. Here is roughly what it does, in order.
+</p>
+
+<ul class="org-ul">
+<li>Check if the git index is clean, otherwise exit</li>
+<li>Check if <code>$AUTODOC_CMD</code> is set, otherwise exit</li>
+<li>Do a <code>git fetch</code>, to know what the target branch looks like on the remote (e.g. <code>origin/gh-pages</code>)</li>
+<li>Clear out <code>$AUTODOC_DIR</code>. It deletes it if already there, and then creates it anew, to make sure you don't commit stale files.</li>
+<li>Run <code>$AUTODOC_CMD</code>. This should put the HTML artifacts in <code>$AUTODOC_DIR</code></li>
+<li>Check if <code>$AUTODOC_DIR</code> is empty. If so then the command didn't create any output, and the script will complain and exit.</li>
+<li>Create a git "tree object" of the contents of <code>$AUTODOC_DIR</code></li>
+<li>Generate a commit message which includes the source branch and commit hash, as well as an overview of any local changes</li>
+<li>Create a git "commit object" with this tree and message, and with as parent commit the latest commit on the target branch on the target remote, or as an orphan commit if the target branch does not yet exist.</li>
+<li>Check if the created commit differs from its parent. If not then there was no change and the script exits.</li>
+<li>Push this commit to <code>AUTODOC_REMOTE/AUTODOC_BRANCH</code> (e.g. <code>origin/gh-pages</code>)</li>
+<li>Display the commit with diff stats so you get some feedback on what happened</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6d59381" class="outline-2">
+<h2 id="org6d59381"><span class="section-number-2">4</span> Generating API docs</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<code>autodoc</code> is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation. 
+</p>
+
+<p>
+If this was wikipedia this part would be called a stub. Do dive in! 
+</p>
+</div>
+
+<div id="outline-container-org54110d2" class="outline-3">
+<h3 id="org54110d2"><span class="section-number-3">4.1</span> Clojure</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+The main tool you're looking for is <a href="https://github.com/weavejester/codox">codox</a>, although <a href="https://github.com/gdeer81/marginalia">Marginalia</a> could also be of use.
+</p>
+
+<ul class="org-ul">
+<li>example <a href="https://github.com/lambdaisland/uri/blob/master/project.clj">using Leiningen</a></li>
+<li>example <a href="https://github.com/martinklepsch/derivatives/blob/1f4cc704dec11be301b790e204fc90c7fe18b293/build.boot#L48-L51">using boot</a></li>
+</ul>
+
+<p>
+Use <code>DOC_CMD="lein codox"</code> or <code>DOC_CMD="boot codox &lt;options&gt; target"</code>. 
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd4ad461" class="outline-2">
+<h2 id="orgd4ad461"><span class="section-number-2">5</span> Improving autodoc</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+This script has already seen a few iterations of polish, but it can without a doubt be further improved. It needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
+</p>
+
+<p>
+If you can make it more reliable and safe then it currently is, then we'd love to get a pull request.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1b69493" class="outline-2">
+<h2 id="org1b69493"><span class="section-number-2">6</span> Credits</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Initially written by <a href="https://twitter.com/plexus">Arne Brasseur</a>, improved with the help of <a href="http://twitter.com/jackrusher/">Martin Klepsch</a> and <a href="http://twitter.com/martinklepsch/">Jack Rusher</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6935c6f" class="outline-2">
+<h2 id="org6935c6f"><span class="section-number-2">7</span> License</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Copyright © Arne Brasseur and contributors
+</p>
+
+<p>
+Available under the Mozilla Public License 2.0. See <code>LICENSE</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b9aebe" class="outline-2">
+<h2 id="org8b9aebe"><span class="section-number-2">8</span> Source</h2>
+<div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #969896; font-style: italic;">#</span><span style="color: #969896; font-style: italic;">!/bin/</span><span style="color: #b5bd68;">bash</span>
 
@@ -280,7 +472,7 @@ for the JavaScript code in this tag.
     <span style="color: #b5bd68;">exit</span> 1
 <span style="color: #b5bd68;">fi</span>
 
-<span style="color: #f0c674;">VERSION</span>=0012
+<span style="color: #f0c674;">VERSION</span>=0013
 
 <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"//======================================\\\\"</span>
 <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"||          AUTODOC v${VERSION}               ||"</span>
@@ -366,9 +558,11 @@ git reset .
 </pre>
 </div>
 </div>
+</div>
+</div>
 <div id="postamble" class="status">
 <p class="author">Author: Arne Brasseur</p>
-<p class="date">Created: 2017-12-12 Tue 19:40</p>
+<p class="date">Created: 2017-12-12 Tue 19:47</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
