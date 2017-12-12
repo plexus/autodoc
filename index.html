@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-12 Tue 19:33 -->
+<!-- 2017-12-12 Tue 19:35 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>autodoc</title>
@@ -261,11 +261,13 @@ for the JavaScript code in this tag.
 <span style="color: #969896; font-style: italic;">############################################################</span>
 
 <span style="color: #b5bd68;">function</span> <span style="color: #de935f;">echo_info</span>() {
-   <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"[\033[0;32mautodoc\033[0m] $*"</span>
+   <span style="color: #b294bb;">echo</span> -en <span style="color: #8abeb7;">"[\033[0;32mautodoc\033[0m] "</span>
+   <span style="color: #b294bb;">echo</span> $<span style="color: #f0c674;">*</span>
 }
 
 <span style="color: #b5bd68;">function</span> <span style="color: #de935f;">echo_error</span>() {
-   <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"[\033[0;31mautodoc\033[0m] $*"</span>
+   <span style="color: #b294bb;">echo</span> -en <span style="color: #8abeb7;">"[\033[0;31mautodoc\033[0m] "</span>
+   <span style="color: #b294bb;">echo</span> $<span style="color: #f0c674;">*</span>
 }
 
 <span style="color: #b5bd68;">if</span> [[ -z <span style="color: #8abeb7;">"$AUTODOC_CMD"</span> ]]; <span style="color: #b5bd68;">then</span>
@@ -366,7 +368,7 @@ git reset .
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arne Brasseur</p>
-<p class="date">Created: 2017-12-12 Tue 19:33</p>
+<p class="date">Created: 2017-12-12 Tue 19:35</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
