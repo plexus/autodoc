@@ -27,17 +27,27 @@ AUTODOC_DIR=${AUTODOC_DIR:-"gh-pages"}
 
 ############################################################
 
+function echo_info() {
+   echo -en "[\033[0;32mautodoc\033[0m] "
+   echo $*
+}
+
+function echo_error() {
+   echo -en "[\033[0;31mautodoc\033[0m] "
+   echo $*
+}
+
 if [[ -z "$AUTODOC_CMD" ]]; then
-    echo "Please specify a AUTODOC_CMD, e.g. lein codox"
+    echo_error "Please specify a AUTODOC_CMD, e.g. lein codox"
     exit 1
 fi
 
 if ! git diff-index --quiet --cached HEAD ; then
-    echo "Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"
+    echo_error "Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"
     exit 1
 fi
 
-VERSION=0009
+VERSION=0010
 
 echo "//======================================\\\\"
 echo "||          AUTODOC v${VERSION}               ||"
@@ -67,30 +77,30 @@ git fetch $AUTODOC_REMOTE
 rm -rf $AUTODOC_DIR
 mkdir -p $AUTODOC_DIR
 
-echo "Generating docs"
+echo_info "Generating docs"
 echo $AUTODOC_CMD | bash
 
 AUTODOC_RESULT=$?
 
 if [[ ! $AUTODOC_RESULT -eq 0 ]]; then
-    echo "The command '${AUTODOC_CMD}' returned a non-zero exit status (${AUTODOC_RESULT}), giving up."
+    echo_error "The command '${AUTODOC_CMD}' returned a non-zero exit status (${AUTODOC_RESULT}), giving up."
     exit $AUTODOC_RESULT
 fi
 
 if [[ $(find $AUTODOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]]; then
-    echo "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"
+    echo_error "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"
     exit 1
 fi
 
 # The full output of AUTODOC_CMD is added to the git index, staged to become a new
 # file tree+commit
-echo "Adding file to git index"
+echo_info "Adding file to git index"
 git --work-tree=$AUTODOC_DIR add -A
 
 # Create a git tree object with the exact contents of $AUTODOC_DIR (the output of
 # the AUTODOC_CMD), this will be file tree of the new commit that's being created.
 TREE=`git write-tree`
-echo "Created git tree $TREE"
+echo_info "Created git tree $TREE"
 
 # Create the new commit, either with the previous remote HEAD as parent, or as a
 # new orphan commit
@@ -103,7 +113,7 @@ else
     COMMIT=$(git commit-tree $TREE -m "$MESSAGE")
 fi
 
-echo "Pushing $COMMIT to $AUTODOC_BRANCH"
+echo_info "Pushing $COMMIT to $AUTODOC_BRANCH"
 
 # Rest the index, commit-tree doesn't do that by itself. If we don't do this
 # `git status` or `git diff` will look *very* weird.
@@ -111,7 +121,7 @@ git reset .
 
 # Push the newly created commit to remote
 if [[ ! -z "$PARENT" ]] && [[ $(git rev-parse ${COMMIT}^{tree}) == $(git rev-parse refs/remotes/$AUTODOC_REMOTE/$AUTODOC_BRANCH^{tree} ) ]] ; then
-    echo "WARNING: No changes in documentation output from previous commit. Not pushing to ${AUTODOC_BRANCH}"
+    echo_error "WARNING: No changes in documentation output from previous commit. Not pushing to ${AUTODOC_BRANCH}"
 else
     git push $AUTODOC_REMOTE $COMMIT:refs/heads/$AUTODOC_BRANCH
     # Make sure our local remotes are up to date.

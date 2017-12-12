@@ -1,0 +1,5 @@
+#!/bin/bash
+
+AUTODOC_CMD="emacsclient -e '(with-current-buffer (find-file-noselect "'"'`pwd`/autodoc.org'"'") (org-html-export-to-html))' && mv autodoc.html gh-pages/index.html"
+
+. autodoc.sh
