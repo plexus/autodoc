@@ -24,7 +24,7 @@ export AUTODOC_CMD="lein codox"
 # is what gets committed to $AUTODOC_BRANCH.
 # export AUTODOC_DIR="gh-pages"
 
-# The git remote to fetch and push to. 
+# The git remote to fetch from and push to. 
 # export AUTODOC_REMOTE="origin"
 
 # Branch name to commit and push to
@@ -57,10 +57,12 @@ The procedure that `autodoc` follows has been tweaked over time to be as reliabl
 - Check if `$AUTODOC_CMD` is set, otherwise exit
 - Do a `git fetch`, to know what the target branch looks like on the remote (e.g. `origin/gh-pages`)
 - Clear out `$AUTODOC_DIR`. It deletes it if already there, and then creates it anew, to make sure you don't commit stale files.
-- Run `$AUTODOC_CMD`
+- Run `$AUTODOC_CMD`. This should put the HTML artifacts in `$AUTODOC_DIR`
+- Check if `$AUTODOC_DIR` is empty. If so then the command didn't create any output, and the script will complain and exit.
 - Create a git "tree object" of the contents of `$AUTODOC_DIR`
 - Generate a commit message which includes the source branch and commit hash, as well as an overview of any local changes
-- Create a git "commit object" with this tree and message, and with as parent commit the latest commit on the target branch on the target remote
+- Create a git "commit object" with this tree and message, and with as parent commit the latest commit on the target branch on the target remote, or as an orphan commit if the target branch does not yet exist.
+- Check if the created commit differs from its parent. If not then there was no change and the script exits.
 - Push this commit to `AUTODOC_REMOTE/AUTODOC_BRANCH` (e.g. `origin/gh-pages`)
 - Display the commit with diff stats so you get some feedback on what happened
 

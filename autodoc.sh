@@ -27,15 +27,21 @@ AUTODOC_DIR=${AUTODOC_DIR:-"gh-pages"}
 
 ############################################################
 
+if [[ -z "$AUTODOC_CMD" ]]; then
+    echo "Please specify a AUTODOC_CMD, e.g. lein codox"
+    exit 1
+fi
+
 if ! git diff-index --quiet --cached HEAD ; then
     echo "Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"
     exit 1
 fi
 
-if [[ -z "$AUTODOC_CMD" ]]; then
-    echo "Please specify a AUTODOC_CMD, e.g. lein codox"
-    exit 1
-fi
+VERSION=0008
+
+echo "//======================================\\\\"
+echo "||          AUTODOC v${VERSION}               ||"
+echo "\\\\======================================//"
 
 MESSAGE="Updating docs based on $(git rev-parse --abbrev-ref HEAD) $(git rev-parse HEAD)
 
@@ -64,7 +70,14 @@ mkdir -p $AUTODOC_DIR
 echo "Generating docs"
 echo $AUTODOC_CMD | bash
 
-if [ $(find $AUTODOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]; then
+AUTODOC_RESULT=$?
+
+if [[ ! $AUTODOC_RESULT -eq 0 ]]; then
+    echo "The command '${AUTODOC_CMD}' returned a non-zero exit status (${AUTODOC_RESULT}), giving up."
+    exit $AUTODOC_RESULT
+fi
+
+if [[ $(find $AUTODOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]]; then
     echo "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"
     exit 1
 fi
