@@ -1,5 +1,5 @@
 #!/bin/bash
 
-AUTODOC_CMD="emacsclient -e '(with-current-buffer (find-file-noselect "'"'`pwd`/README.org'"'") (org-html-export-to-html))' && mv README.html gh-pages/index.html"
+AUTODOC_CMD="bin/build_docs"
 
 . autodoc.sh

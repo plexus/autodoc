@@ -1,0 +1,3 @@
+* Source
+
+#+INCLUDE: "../autodoc.sh" src shell

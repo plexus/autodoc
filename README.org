@@ -1,4 +1,12 @@
 #+TITLE: autodoc
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="htmlize.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="readtheorg.css"/>
+#+HTML_HEAD: <script src="jquery.min.js"></script>
+#+HTML_HEAD: <script src="bootstrap.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="jquery.stickytableheaders.min.js"></script>
+#+HTML_HEAD: <script type="text/javascript" src="readtheorg.js"></script>
+
+[[https://plexus.github.io/autodoc/][Autodoc docs]]
 
 Automate the publishing of generated docs.
 
@@ -87,6 +95,8 @@ This script has already seen a few iterations of polish, but it can without a do
 
 If you can make it more reliable and safe then it currently is, then we'd love to get a pull request.
 
+* Projects using autodoc
+
 * Credits
 
   Initially written by [[https://twitter.com/plexus][Arne Brasseur]], improved with the help of [[http://twitter.com/martinklepsch/][Martin Klepsch]] and [[http://twitter.com/jackrusher/][Jack Rusher]]
@@ -97,6 +107,7 @@ Copyright © Arne Brasseur and contributors
 
 Available under the Mozilla Public License 2.0. See ~LICENSE~.
 
-* [[https://github.com/plexus/autodoc][Source]]
+# These are included in the built docs, but are not visible on the Github
+# project page
 
-#+INCLUDE: "autodoc.sh" src shell
+#+INCLUDE: "doc/source.org" :minlevel 1

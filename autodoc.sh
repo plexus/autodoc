@@ -47,7 +47,7 @@ if ! git diff-index --quiet --cached HEAD ; then
     exit 1
 fi
 
-VERSION=0013
+VERSION=0018
 
 echo "//======================================\\\\"
 echo "||          AUTODOC v${VERSION}               ||"
