@@ -24,7 +24,7 @@ export AUTODOC_CMD="lein codox"
 # is what gets committed to $AUTODOC_BRANCH.
 # export AUTODOC_DIR="gh-pages"
 
-# The git remote to fetch from and push to. 
+# The git remote to fetch from and push to.
 # export AUTODOC_REMOTE="origin"
 
 # Branch name to commit and push to
@@ -68,9 +68,9 @@ The procedure that ~autodoc~ follows has been tweaked over time to be as reliabl
 
 * Generating API docs
 
-~autodoc~ is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation. 
+~autodoc~ is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation.
 
-If this was wikipedia this part would be called a stub. Do dive in! 
+If this was wikipedia this part would be called a stub. Do dive in!
 
 ** Clojure
 
@@ -79,7 +79,7 @@ If this was wikipedia this part would be called a stub. Do dive in!
    - example [[https://github.com/lambdaisland/uri/blob/master/project.clj][using Leiningen]]
    - example [[https://github.com/martinklepsch/derivatives/blob/1f4cc704dec11be301b790e204fc90c7fe18b293/build.boot#L48-L51][using boot]]
 
-Use ~DOC_CMD="lein codox"~ or ~DOC_CMD="boot codox <options> target"~. 
+Use ~DOC_CMD="lein codox"~ or ~DOC_CMD="boot codox <options> target"~.
 
 * Improving autodoc
 
@@ -89,7 +89,7 @@ If you can make it more reliable and safe then it currently is, then we'd love t
 
 * Credits
 
-  Initially written by [[https://twitter.com/plexus][Arne Brasseur]], improved with the help of [[http://twitter.com/jackrusher/][Martin Klepsch]] and [[http://twitter.com/martinklepsch/][Jack Rusher]]
+  Initially written by [[https://twitter.com/plexus][Arne Brasseur]], improved with the help of [[http://twitter.com/martinklepsch/][Martin Klepsch]] and [[http://twitter.com/jackrusher/][Jack Rusher]]
 
 * License
 
