@@ -97,6 +97,6 @@ Copyright © Arne Brasseur and contributors
 
 Available under the Mozilla Public License 2.0. See ~LICENSE~.
 
-* [[Source][https://github.com/plexus/autodoc]]
+* [[https://github.com/plexus/autodoc][Source]]
 
 #+INCLUDE: "autodoc.sh" src shell
