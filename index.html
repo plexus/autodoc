@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-12-12 Tue 19:47 -->
+<!-- 2017-12-21 Thu 20:40 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>autodoc</title>
@@ -234,18 +234,17 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org39ab3b8">1. Installation</a></li>
-<li><a href="#orgdec35ea">2. Usage instructions</a></li>
-<li><a href="#orgf944adf">3. How it works</a></li>
-<li><a href="#org6d59381">4. Generating API docs</a>
+<li><a href="#org9da4f52">1. Installation</a></li>
+<li><a href="#orgfbda10f">2. Usage instructions</a></li>
+<li><a href="#org0d00fc9">3. How it works</a></li>
+<li><a href="#orgb381322">4. Generating API docs</a>
 <ul>
-<li><a href="#org54110d2">4.1. Clojure</a></li>
+<li><a href="#orgac4f66f">4.1. Clojure</a></li>
 </ul>
 </li>
-<li><a href="#orgd4ad461">5. Improving autodoc</a></li>
-<li><a href="#org1b69493">6. Credits</a></li>
-<li><a href="#org6935c6f">7. License</a></li>
-<li><a href="#org8b9aebe">8. Source</a></li>
+<li><a href="#org15a563f">5. Improving autodoc</a></li>
+<li><a href="#orga70e591">6. Credits</a></li>
+<li><a href="#org9fbe95c">7. License</a></li>
 </ul>
 </div>
 </div>
@@ -269,8 +268,8 @@ If you're using Github then getting these resulting files on-line is as easy as 
 Enter <code>autodoc</code>, a single shell script that automates this process as best as it can.
 </p>
 
-<div id="outline-container-org39ab3b8" class="outline-2">
-<h2 id="org39ab3b8"><span class="section-number-2">1</span> Installation</h2>
+<div id="outline-container-org9da4f52" class="outline-2">
+<h2 id="org9da4f52"><span class="section-number-2">1</span> Installation</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The recommended, "evergreen" way of using <code>autodoc</code> is to create a small shell script in your repository, you can call it <code>generate_docs</code>, that looks like this:
@@ -286,7 +285,7 @@ The recommended, "evergreen" way of using <code>autodoc</code> is to create a sm
 <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">is what gets committed to $AUTODOC_BRANCH.</span>
 <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">export AUTODOC_DIR="gh-pages"</span>
 
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The git remote to fetch from and push to. </span>
+<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The git remote to fetch from and push to.</span>
 <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">export AUTODOC_REMOTE="origin"</span>
 
 <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Branch name to commit and push to</span>
@@ -308,8 +307,8 @@ top of the script.
 </div>
 </div>
 
-<div id="outline-container-orgdec35ea" class="outline-2">
-<h2 id="orgdec35ea"><span class="section-number-2">2</span> Usage instructions</h2>
+<div id="outline-container-orgfbda10f" class="outline-2">
+<h2 id="orgfbda10f"><span class="section-number-2">2</span> Usage instructions</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Call <code>./generate_docs</code> at any time, and the HTML will immediately be updated and made available on-line. This is safe to do no matter the state of your repository. More on why that is below.
@@ -329,8 +328,8 @@ You can have local changes, untracked files, etc. The script does not actually s
 </div>
 </div>
 
-<div id="outline-container-orgf944adf" class="outline-2">
-<h2 id="orgf944adf"><span class="section-number-2">3</span> How it works</h2>
+<div id="outline-container-org0d00fc9" class="outline-2">
+<h2 id="org0d00fc9"><span class="section-number-2">3</span> How it works</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 The procedure that <code>autodoc</code> follows has been tweaked over time to be as reliable and fool proof as possible. Here is roughly what it does, in order.
@@ -353,20 +352,20 @@ The procedure that <code>autodoc</code> follows has been tweaked over time to be
 </div>
 </div>
 
-<div id="outline-container-org6d59381" class="outline-2">
-<h2 id="org6d59381"><span class="section-number-2">4</span> Generating API docs</h2>
+<div id="outline-container-orgb381322" class="outline-2">
+<h2 id="orgb381322"><span class="section-number-2">4</span> Generating API docs</h2>
 <div class="outline-text-2" id="text-4">
 <p>
-<code>autodoc</code> is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation. 
+<code>autodoc</code> is really a cry to library maintainers across continents and languages: please publish API docs. Here I'll try to collect some quick tips on how to do that. Please add your favorite language and tool, each section should be a concise summary on how to get started, plus links to the tool's documentation.
 </p>
 
 <p>
-If this was wikipedia this part would be called a stub. Do dive in! 
+If this was wikipedia this part would be called a stub. Do dive in!
 </p>
 </div>
 
-<div id="outline-container-org54110d2" class="outline-3">
-<h3 id="org54110d2"><span class="section-number-3">4.1</span> Clojure</h3>
+<div id="outline-container-orgac4f66f" class="outline-3">
+<h3 id="orgac4f66f"><span class="section-number-3">4.1</span> Clojure</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 The main tool you're looking for is <a href="https://github.com/weavejester/codox">codox</a>, although <a href="https://github.com/gdeer81/marginalia">Marginalia</a> could also be of use.
@@ -378,14 +377,14 @@ The main tool you're looking for is <a href="https://github.com/weavejester/codo
 </ul>
 
 <p>
-Use <code>DOC_CMD="lein codox"</code> or <code>DOC_CMD="boot codox &lt;options&gt; target"</code>. 
+Use <code>DOC_CMD="lein codox"</code> or <code>DOC_CMD="boot codox &lt;options&gt; target"</code>.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd4ad461" class="outline-2">
-<h2 id="orgd4ad461"><span class="section-number-2">5</span> Improving autodoc</h2>
+<div id="outline-container-org15a563f" class="outline-2">
+<h2 id="org15a563f"><span class="section-number-2">5</span> Improving autodoc</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 This script has already seen a few iterations of polish, but it can without a doubt be further improved. It needs to be reliable and safe, either doing its job, or bailing out and telling the user what the problem is.
@@ -397,17 +396,17 @@ If you can make it more reliable and safe then it currently is, then we'd love t
 </div>
 </div>
 
-<div id="outline-container-org1b69493" class="outline-2">
-<h2 id="org1b69493"><span class="section-number-2">6</span> Credits</h2>
+<div id="outline-container-orga70e591" class="outline-2">
+<h2 id="orga70e591"><span class="section-number-2">6</span> Credits</h2>
 <div class="outline-text-2" id="text-6">
 <p>
-Initially written by <a href="https://twitter.com/plexus">Arne Brasseur</a>, improved with the help of <a href="http://twitter.com/jackrusher/">Martin Klepsch</a> and <a href="http://twitter.com/martinklepsch/">Jack Rusher</a>
+Initially written by <a href="https://twitter.com/plexus">Arne Brasseur</a>, improved with the help of <a href="http://twitter.com/martinklepsch/">Martin Klepsch</a> and <a href="http://twitter.com/jackrusher/">Jack Rusher</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6935c6f" class="outline-2">
-<h2 id="org6935c6f"><span class="section-number-2">7</span> License</h2>
+<div id="outline-container-org9fbe95c" class="outline-2">
+<h2 id="org9fbe95c"><span class="section-number-2">7</span> License</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Copyright © Arne Brasseur and contributors
@@ -416,145 +415,11 @@ Copyright © Arne Brasseur and contributors
 <p>
 Available under the Mozilla Public License 2.0. See <code>LICENSE</code>.
 </p>
-</div>
-</div>
 
-<div id="outline-container-org8b9aebe" class="outline-2">
-<h2 id="org8b9aebe"><span class="section-number-2">8</span> Source</h2>
-<div class="outline-text-2" id="text-8">
 <div class="org-src-container">
-<pre class="src src-shell"><span style="color: #969896; font-style: italic;">#</span><span style="color: #969896; font-style: italic;">!/bin/</span><span style="color: #b5bd68;">bash</span>
+<pre class="src src-org"><span style="color: #81a2be;">* Source</span>
 
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Keep a separate branch of generated API docs.</span>
-<span style="color: #969896; font-style: italic;">#</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">This script generates API documentation, commits it to a separate branch, and</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">pushes it upstream. It does this without actually checking out the branch,</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">using a separate working tree directory, so without any disruption to your</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">current working tree. You can have local file modifications, but the git index</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">(staging area) must be clean.</span>
-
-<span style="color: #969896; font-style: italic;">############################################################</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">These variables can all be overridden from the command line,</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">e.g. AUTODOC_REMOTE=plexus ./generate_docs</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The git remote to fetch and push to. Also used to find the parent commit.</span>
-<span style="color: #f0c674;">AUTODOC_REMOTE</span>=${<span style="color: #f0c674;">AUTODOC_REMOTE</span>:-<span style="color: #8abeb7;">"origin"</span>}
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Branch name to commit and push to</span>
-<span style="color: #f0c674;">AUTODOC_BRANCH</span>=${<span style="color: #f0c674;">AUTODOC_BRANCH</span>:-<span style="color: #8abeb7;">"gh-pages"</span>}
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Command that generates the API docs</span>
-<span style="color: #969896; font-style: italic;">#</span><span style="color: #969896; font-style: italic;">AUTODOC_CMD=${AUTODOC_CMD:-"lein with-profile +codox codox"}</span>
-<span style="color: #969896; font-style: italic;">#</span><span style="color: #969896; font-style: italic;">AUTODOC_CMD=${AUTODOC_CMD:-"boot codox -s src -n my-project -o gh-pages target"}</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Working tree directory. The output of $AUTODOC_CMD must end up in this directory.</span>
-<span style="color: #f0c674;">AUTODOC_DIR</span>=${<span style="color: #f0c674;">AUTODOC_DIR</span>:-<span style="color: #8abeb7;">"gh-pages"</span>}
-
-<span style="color: #969896; font-style: italic;">############################################################</span>
-
-<span style="color: #b5bd68;">function</span> <span style="color: #de935f;">echo_info</span>() {
-   <span style="color: #b294bb;">echo</span> -en <span style="color: #8abeb7;">"[\033[0;32mautodoc\033[0m] "</span>
-   <span style="color: #b294bb;">echo</span> $<span style="color: #f0c674;">*</span>
-}
-
-<span style="color: #b5bd68;">function</span> <span style="color: #de935f;">echo_error</span>() {
-   <span style="color: #b294bb;">echo</span> -en <span style="color: #8abeb7;">"[\033[0;31mautodoc\033[0m] "</span>
-   <span style="color: #b294bb;">echo</span> $<span style="color: #f0c674;">*</span>
-}
-
-<span style="color: #b5bd68;">if</span> [[ -z <span style="color: #8abeb7;">"$AUTODOC_CMD"</span> ]]; <span style="color: #b5bd68;">then</span>
-    echo_error <span style="color: #8abeb7;">"Please specify a AUTODOC_CMD, e.g. lein codox"</span>
-    <span style="color: #b5bd68;">exit</span> 1
-<span style="color: #b5bd68;">fi</span>
-
-<span style="color: #b5bd68;">if</span> <span style="color: #81a2be;">!</span> git diff-index --quiet --cached HEAD ; <span style="color: #b5bd68;">then</span>
-    echo_error <span style="color: #8abeb7;">"Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"</span>
-    <span style="color: #b5bd68;">exit</span> 1
-<span style="color: #b5bd68;">fi</span>
-
-<span style="color: #f0c674;">VERSION</span>=0013
-
-<span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"//======================================\\\\"</span>
-<span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"||          AUTODOC v${VERSION}               ||"</span>
-<span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"\\\\======================================//"</span>
-
-<span style="color: #f0c674;">MESSAGE</span>=<span style="color: #8abeb7;">"Updating docs based on $(git rev-parse --abbrev-ref HEAD) $(git rev-parse HEAD)</span>
-
-<span style="color: #8abeb7;">Ran: $AUTODOC_CMD</span>
-<span style="color: #8abeb7;">"</span>
-
-<span style="color: #b5bd68;">if</span> [[ <span style="color: #81a2be;">!</span> -z <span style="color: #8abeb7;">"$(git status --porcelain)"</span> ]]; <span style="color: #b5bd68;">then</span>
-  <span style="color: #f0c674;">MESSAGE</span>=<span style="color: #8abeb7;">"$MESSAGE</span>
-<span style="color: #8abeb7;">Repo not clean.</span>
-
-<span style="color: #8abeb7;">    Status:</span>
-<span style="color: #8abeb7;">$(git status --short)</span>
-
-<span style="color: #8abeb7;">    Diff:</span>
-<span style="color: #8abeb7;">$(git diff)"</span>
-<span style="color: #b5bd68;">fi</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Fetch the remote, we don't care about local branches, only about what's</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">currently on the remote</span>
-git fetch $<span style="color: #f0c674;">AUTODOC_REMOTE</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Start from a clean slate, we only commit the new output of AUTODOC_CMD, nothing else.</span>
-rm -rf $<span style="color: #f0c674;">AUTODOC_DIR</span>
-mkdir -p $<span style="color: #f0c674;">AUTODOC_DIR</span>
-
-echo_info <span style="color: #8abeb7;">"Generating docs"</span>
-<span style="color: #b294bb;">echo</span> $<span style="color: #f0c674;">AUTODOC_CMD</span> | bash
-
-<span style="color: #f0c674;">AUTODOC_RESULT</span>=$<span style="color: #f0c674;">?</span>
-
-<span style="color: #b5bd68;">if</span> [[ <span style="color: #81a2be;">!</span> $<span style="color: #f0c674;">AUTODOC_RESULT</span> -eq 0 ]]; <span style="color: #b5bd68;">then</span>
-    echo_error <span style="color: #8abeb7;">"The command '${AUTODOC_CMD}' returned a non-zero exit status (${AUTODOC_RESULT}), giving up."</span>
-    <span style="color: #b5bd68;">exit</span> $<span style="color: #f0c674;">AUTODOC_RESULT</span>
-<span style="color: #b5bd68;">fi</span>
-
-<span style="color: #b5bd68;">if</span> [[ $(find $<span style="color: #f0c674;">AUTODOC_DIR</span> -maxdepth 0 -type d -empty 2&gt;/dev/null) ]]; <span style="color: #b5bd68;">then</span>
-    echo_error <span style="color: #8abeb7;">"The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"</span>
-    <span style="color: #b5bd68;">exit</span> 1
-<span style="color: #b5bd68;">fi</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">The full output of AUTODOC_CMD is added to the git index, staged to become a new</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">file tree+commit</span>
-echo_info <span style="color: #8abeb7;">"Adding file to git index"</span>
-git --work-tree=$<span style="color: #f0c674;">AUTODOC_DIR</span> add -A
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Create a git tree object with the exact contents of $AUTODOC_DIR (the output of</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">the AUTODOC_CMD), this will be file tree of the new commit that's being created.</span>
-<span style="color: #f0c674;">TREE</span>=<span style="color: #b294bb;">`git write-tree`</span>
-echo_info <span style="color: #8abeb7;">"Created git tree $TREE"</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Create the new commit, either with the previous remote HEAD as parent, or as a</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">new orphan commit</span>
-<span style="color: #b5bd68;">if</span> git show-ref --quiet --verify <span style="color: #8abeb7;">"refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH}"</span> ; <span style="color: #b5bd68;">then</span>
-    <span style="color: #f0c674;">PARENT</span>=<span style="color: #b294bb;">`git rev-parse ${AUTODOC_REMOTE}/${AUTODOC_BRANCH}`</span>
-    <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"Creating commit with parent refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH} ${PARENT}"</span>
-    <span style="color: #f0c674;">COMMIT</span>=$(git commit-tree -p $<span style="color: #f0c674;">PARENT</span> $<span style="color: #f0c674;">TREE</span> -m <span style="color: #8abeb7;">"$MESSAGE"</span>)
-<span style="color: #b5bd68;">else</span>
-    <span style="color: #b294bb;">echo</span> <span style="color: #8abeb7;">"Creating first commit of the branch"</span>
-    <span style="color: #f0c674;">COMMIT</span>=$(git commit-tree $<span style="color: #f0c674;">TREE</span> -m <span style="color: #8abeb7;">"$MESSAGE"</span>)
-<span style="color: #b5bd68;">fi</span>
-
-echo_info <span style="color: #8abeb7;">"Pushing $COMMIT to $AUTODOC_BRANCH"</span>
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Rest the index, commit-tree doesn't do that by itself. If we don't do this</span>
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">`git status` or `git diff` will look *very* weird.</span>
-git reset .
-
-<span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Push the newly created commit to remote</span>
-<span style="color: #b5bd68;">if</span> [[ <span style="color: #81a2be;">!</span> -z <span style="color: #8abeb7;">"$PARENT"</span> ]] &amp;&amp; [[ $(git rev-parse ${<span style="color: #f0c674;">COMMIT</span>}^{tree}) == $(git rev-parse refs/remotes/$<span style="color: #f0c674;">AUTODOC_REMOTE</span>/$<span style="color: #f0c674;">AUTODOC_BRANCH</span>^{tree} ) ]] ; <span style="color: #b5bd68;">then</span>
-    echo_error <span style="color: #8abeb7;">"WARNING: No changes in documentation output from previous commit. Not pushing to ${AUTODOC_BRANCH}"</span>
-<span style="color: #b5bd68;">else</span>
-    git push $<span style="color: #f0c674;">AUTODOC_REMOTE</span> $<span style="color: #f0c674;">COMMIT</span>:refs/heads/$<span style="color: #f0c674;">AUTODOC_BRANCH</span>
-    <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Make sure our local remotes are up to date.</span>
-    git fetch
-    <span style="color: #969896; font-style: italic;"># </span><span style="color: #969896; font-style: italic;">Show what happened, you should see a little stat diff here of the changes</span>
-    <span style="color: #b294bb;">echo</span>
-    git log -1 --stat $<span style="color: #f0c674;">AUTODOC_REMOTE</span>/$<span style="color: #f0c674;">AUTODOC_BRANCH</span>
-<span style="color: #b5bd68;">fi</span>
+<span style="color: #969896; font-style: italic;">#+INCLUDE: "../autodoc.sh" src shell</span>
 </pre>
 </div>
 </div>
@@ -562,7 +427,7 @@ git reset .
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arne Brasseur</p>
-<p class="date">Created: 2017-12-12 Tue 19:47</p>
+<p class="date">Created: 2017-12-21 Thu 20:40</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
