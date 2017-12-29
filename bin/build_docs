@@ -11,8 +11,6 @@ wget -q https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js
 wget -q https://www.pirilampo.org/styles/lib/js/jquery.stickytableheaders.min.js
 wget -q https://www.pirilampo.org/styles/readtheorg/js/readtheorg.js
 
-echo emacsclient -e '(with-current-buffer (find-file-noselect "'`pwd`'/README.org") (org-html-export-to-html))'
-
 emacsclient -e '(with-current-buffer (find-file-noselect "'`pwd`'/../README.org") (org-html-export-to-html))'
 
 mv ../README.html index.html
