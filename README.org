@@ -32,6 +32,12 @@ export AUTODOC_CMD="lein codox"
 # is what gets committed to $AUTODOC_BRANCH.
 # export AUTODOC_DIR="gh-pages"
 
+# You can optionally keep multiple versions of your documentation in a
+# subdirectory of AUTODOC_DIR.  If you set this variable then the
+# generated HTML is expected to go into this subdirectory, and the contents
+# of any other subdirectories are preserved.
+# export AUTODOC_SUBDIR="v0.1.0"
+
 # The git remote to fetch from and push to.
 # export AUTODOC_REMOTE="origin"
 
@@ -53,7 +59,7 @@ Call ~./generate_docs~ at any time, and the HTML will immediately be updated and
 
 The other variables are optional, the values you see in the script above are their defaults.
 
-You can have local changes, untracked files, etc. The script does not actually switch branches, and does not change the current "working tree" beyond running ~$AUTODOC_CMD~. ~autodoc~ does use the "git index" (also known as the "staging area"), so this needs to be clean. If you did a ~git add~ before then the script will complain and refuse to continue until you ~commit~ or ~reset~.
+You can have local changes, untracked files, files in the staging area, etc. The script does not actually switch branches, and does not change the current "working tree" beyond running ~$AUTODOC_CMD~.
 
 **DO WATCH OUT:** The ~$AUTODOC_DIR~ directory will be removed and re-created on every run. It should only contain generated artifacts, and should be in your ~.gitignore~. If you point this to your homework then it will eat your homework.
 
@@ -61,13 +67,12 @@ You can have local changes, untracked files, etc. The script does not actually s
 
 The procedure that ~autodoc~ follows has been tweaked over time to be as reliable and fool proof as possible. Here is roughly what it does, in order.
 
-- Check if the git index is clean, otherwise exit
 - Check if ~$AUTODOC_CMD~ is set, otherwise exit
 - Do a ~git fetch~, to know what the target branch looks like on the remote (e.g. ~origin/gh-pages~)
 - Clear out ~$AUTODOC_DIR~. It deletes it if already there, and then creates it anew, to make sure you don't commit stale files.
 - Run ~$AUTODOC_CMD~. This should put the HTML artifacts in ~$AUTODOC_DIR~
 - Check if ~$AUTODOC_DIR~ is empty. If so then the command didn't create any output, and the script will complain and exit.
-- Create a git "tree object" of the contents of ~$AUTODOC_DIR~
+- Create a git "tree object" of the contents of ~$AUTODOC_DIR~. If ~$AUTODOC_SUBDIR~ is set, then any docs that were previously generated to other subdirs are also merged into the tree.
 - Generate a commit message which includes the source branch and commit hash, as well as an overview of any local changes
 - Create a git "commit object" with this tree and message, and with as parent commit the latest commit on the target branch on the target remote, or as an orphan commit if the target branch does not yet exist.
 - Check if the created commit differs from its parent. If not then there was no change and the script exits.

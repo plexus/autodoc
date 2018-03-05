@@ -5,8 +5,9 @@
 # This script generates API documentation, commits it to a separate branch, and
 # pushes it upstream. It does this without actually checking out the branch,
 # using a separate working tree directory, so without any disruption to your
-# current working tree. You can have local file modifications, but the git index
-# (staging area) must be clean.
+# current working tree. You can have local file modifications, and/or files in
+# the staging area, but be warned it will be difficult to track the origin
+# of your documentation if the tree isn't committed.
 
 ############################################################
 # These variables can all be overridden from the command line,
@@ -25,6 +26,12 @@ AUTODOC_BRANCH=${AUTODOC_BRANCH:-"gh-pages"}
 # Working tree directory. The output of $AUTODOC_CMD must end up in this directory.
 AUTODOC_DIR=${AUTODOC_DIR:-"gh-pages"}
 
+# Working tree subdirectory. This is for situations where the caller
+# wishes to preserve multiple versions of the documentation. When
+# non-empty then the output of $AUTODOC_CMD must end up in
+# $AUTODOC_DIR/$AUTODOC_SUBDIR
+AUTODOC_SUBDIR=${AUTODOC_SUBDIR:-""}
+
 ############################################################
 
 function echo_info() {
@@ -42,18 +49,13 @@ if [[ -z "$AUTODOC_CMD" ]]; then
     exit 1
 fi
 
-if ! git diff-index --quiet --cached HEAD ; then
-    echo_error "Git index isn't clean. Make sure you have no staged changes. (try 'git reset .')"
-    exit 1
-fi
-
-VERSION=0019
+VERSION=0020
 
 echo "//======================================\\\\"
 echo "||          AUTODOC v${VERSION}               ||"
 echo "\\\\======================================//"
 
-MESSAGE="Updating docs based on $(git rev-parse --abbrev-ref HEAD) $(git rev-parse HEAD)
+MESSAGE="Updating docs ($AUTODOC_DIR/$AUTODOC_SUBDIR) from commit $(git rev-parse --short HEAD) on branch $(git rev-parse --abbrev-ref HEAD)
 
 Ran: $AUTODOC_CMD
 "
@@ -87,37 +89,75 @@ if [[ ! $AUTODOC_RESULT -eq 0 ]]; then
     exit $AUTODOC_RESULT
 fi
 
-if [[ $(find $AUTODOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]]; then
-    echo_error "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"
-    exit 1
+# Confirm there is new output in the specified dir
+if [[ -z "$AUTODOC_SUBDIR" ]]; then
+    if [[ $(find $AUTODOC_DIR -maxdepth 0 -type d -empty 2>/dev/null) ]]; then
+        echo_error "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR', giving up"
+        exit 1
+    fi
+else
+    if [[ $(find $AUTODOC_DIR/$AUTODOC_SUBDIR -maxdepth 0 -type d -empty 2>/dev/null) ]]; then
+        echo_error "The command '$AUTODOC_CMD' created no output in '$AUTODOC_DIR/$AUTODOC_SUBDIR', giving up"
+        exit 1
+    fi
 fi
 
-# The full output of AUTODOC_CMD is added to the git index, staged to become a new
-# file tree+commit
-echo_info "Adding file to git index"
-git --work-tree=$AUTODOC_DIR add -A
+# Create a temp dir
+AUTODOC_TMP=$(mktemp -d -t autodoc)
+AUTODOC_RESULT=$?
+if [[ ! $AUTODOC_RESULT -eq 0 ]]; then
+    echo_error "mktemp returned a non-zero exit status (${AUTODOC_RESULT}), giving up."
+    exit $AUTODOC_RESULT
+fi
 
-# Create a git tree object with the exact contents of $AUTODOC_DIR (the output of
-# the AUTODOC_CMD), this will be file tree of the new commit that's being created.
+# Use a temp index to construct the tree to commit
+export GIT_INDEX_FILE=$AUTODOC_TMP/index
+
+# Determine the parent commit (if any) on AUTODOC_BRANCH
+if git show-ref --quiet --verify "refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH}" ; then
+    PARENT=`git rev-parse ${AUTODOC_REMOTE}/${AUTODOC_BRANCH}`
+fi
+
+# Prepare index
+if [[ ! -z "$AUTODOC_SUBDIR" && ! -z "$PARENT" ]]; then
+    # If there is a parent commit on AUTODOC_BRANCH, and we're
+    # preserving other subdirs, then we need to read-tree the previous
+    # state of AUTODOC_DIR
+    echo_info "Reading tree from parent commit"
+    PARENT_TREE=`git rev-parse $PARENT^{tree}`
+    git read-tree $PARENT_TREE
+    # We remove any remnant of the last subdir from the index
+    git rm --cached -r $AUTODOC_SUBDIR
+    # Add in the current generated docs
+    echo_info "Merging new docs into git index"
+    git --work-tree=$AUTODOC_DIR add --no-all .
+else
+    # If we're not preserving subdirs or we don't have a parent then
+    # the full output of AUTODOC_CMD is added to the git index, staged
+    # to become a new file tree+commit
+    echo_info "Adding docs to git index"
+    git --work-tree=$AUTODOC_DIR add -A
+fi
+
+# Write the git tree with the exact contents of index.
 TREE=`git write-tree`
 echo_info "Created git tree $TREE"
 
 # Create the new commit, either with the previous remote HEAD as parent, or as a
 # new orphan commit
-if git show-ref --quiet --verify "refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH}" ; then
-    PARENT=`git rev-parse ${AUTODOC_REMOTE}/${AUTODOC_BRANCH}`
-    echo "Creating commit with parent refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH} ${PARENT}"
+if [[ ! -z "$PARENT" ]]; then
+    echo_info "Creating commit with parent refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH} ${PARENT}"
     COMMIT=$(git commit-tree -p $PARENT $TREE -m "$MESSAGE")
 else
-    echo "Creating first commit of the branch"
+    echo_info "Creating first commit of the branch"
     COMMIT=$(git commit-tree $TREE -m "$MESSAGE")
 fi
 
-echo_info "Pushing $COMMIT to $AUTODOC_BRANCH"
+# Restore the original git index and clean up the temp dir
+unset GIT_INDEX_FILE
+rm -rf $AUTODOC_TMP
 
-# Rest the index, commit-tree doesn't do that by itself. If we don't do this
-# `git status` or `git diff` will look *very* weird.
-git reset .
+echo_info "Pushing $COMMIT to $AUTODOC_BRANCH"
 
 # Push the newly created commit to remote
 if [[ ! -z "$PARENT" ]] && [[ $(git rev-parse ${COMMIT}^{tree}) == $(git rev-parse refs/remotes/$AUTODOC_REMOTE/$AUTODOC_BRANCH^{tree} ) ]] ; then
