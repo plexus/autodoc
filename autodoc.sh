@@ -49,7 +49,7 @@ if [[ -z "$AUTODOC_CMD" ]]; then
     exit 1
 fi
 
-VERSION=0021
+VERSION=0022
 
 echo "//======================================\\\\"
 echo "||          AUTODOC v${VERSION}               ||"
@@ -71,9 +71,12 @@ $(git status --short)
 $(git diff)"
 fi
 
-# Fetch the remote, we don't care about local branches, only about what's
-# currently on the remote
-git fetch $AUTODOC_REMOTE
+# Fetch the remote. We don't care about local branches, only about
+# what's currently on the remote. Using the explicit "+refs/heads/..."
+# syntax like this looks overly complicated but is necessary in CI
+# environments like Travis CI where only the specific branch of the
+# repo is cloned.
+git fetch $AUTODOC_REMOTE "+refs/heads/${AUTODOC_BRANCH}:refs/remotes/${AUTODOC_REMOTE}/${AUTODOC_BRANCH}"
 
 # Start from a clean slate, we only commit the new output of AUTODOC_CMD, nothing else.
 rm -rf $AUTODOC_DIR
