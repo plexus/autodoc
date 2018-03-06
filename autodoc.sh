@@ -49,7 +49,7 @@ if [[ -z "$AUTODOC_CMD" ]]; then
     exit 1
 fi
 
-VERSION=0020
+VERSION=0021
 
 echo "//======================================\\\\"
 echo "||          AUTODOC v${VERSION}               ||"
@@ -103,7 +103,7 @@ else
 fi
 
 # Create a temp dir
-AUTODOC_TMP=$(mktemp -d -t autodoc)
+AUTODOC_TMP=$(mktemp -d /tmp/autodoc.XXXXXXXX)
 AUTODOC_RESULT=$?
 if [[ ! $AUTODOC_RESULT -eq 0 ]]; then
     echo_error "mktemp returned a non-zero exit status (${AUTODOC_RESULT}), giving up."
